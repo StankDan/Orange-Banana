@@ -1,3 +1,29 @@
-# https://www.robotstxt.org/robotstxt.html
+# Orange Banana · https://orangebanana.co
+#
+# PRE-LAUNCH: the site is kept out of search engines and AI crawlers for now.
+# Search engines may still fetch pages, because that is how they read the noindex
+# on every page (X-Robots-Tag in public/_headers + <meta name="robots"> in index.html);
+# a Disallow here would stop them from seeing it and could leave bare URLs in results.
+# To go live, see "Going live" in README.md.
+
 User-agent: *
-Disallow:
+Allow: /
+
+# AI crawlers don't reliably honour noindex, so they are blocked outright until launch.
+User-agent: GPTBot
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: ClaudeBot
+User-agent: Claude-SearchBot
+User-agent: Claude-User
+User-agent: anthropic-ai
+User-agent: PerplexityBot
+User-agent: Perplexity-User
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+User-agent: meta-externalagent
+User-agent: CCBot
+User-agent: DuckAssistBot
+User-agent: Bytespider
+User-agent: Amazonbot
+Disallow: /

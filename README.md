@@ -1,70 +1,55 @@
-# Getting Started with Create React App
+# Orange Banana website
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+React + TypeScript app (Vite, Tailwind CSS 3, React Router), prerendered to static HTML at build time. Built from the v22 design.
 
-## Available Scripts
+## Commands
 
-In the project directory, you can run:
+- `npm install` – once
+- `npm start` – dev server at http://localhost:3000
+- `npm run build` – type-checks, builds, and prerenders every page into `build/`
+- `npm run preview` – serves `build/` locally, to check a production build
 
-### `npm start`
+## Structure
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+```
+index.html                 head: SEO/Open Graph tags, fonts, site-wide schema (Organization, founder, services)
+scripts/prerender.mjs      build step: writes one HTML file per sitemap URL, plus the 404 shell
+src/
+  main.tsx                 browser entry point (hydrates the prerendered HTML)
+  entry-server.tsx         build-time entry point, renders one route to HTML
+  App.tsx                  routes (one URL per page; pages other than home load on demand)
+  index.css                Tailwind + the site's custom CSS (cards, ticker, audit)
+  components/
+    Layout.tsx             header + page + footer + cookie banner, scroll to top on navigation
+    Header.tsx, Footer.tsx
+    ConsentBanner.tsx      cookie banner
+    ContactForm.tsx        "Book thirty minutes": Formspree (xvzwzbrk) + reCAPTCHA v2
+    PageMeta.tsx           per-page title, description, canonical, social tags
+    JsonLd.tsx             per-page structured data (Article, FAQ, Service, breadcrumbs...)
+    Ticker.tsx, icons.tsx
+  consent/                 cookie consent state and consent-gated Google Analytics
+  data/                    Messaging Audit questions and score bands
+  pages/                   one component per page
+public/                    static files copied as-is (favicons, og-image, robots, llms.txt, sitemap)
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Prerendering
 
-### `npm test`
+Most AI crawlers don't run JavaScript, so every page ships as real HTML with its own head tags and schema.
+The list of pages comes from `public/sitemap.xml`: **a new page needs a `<loc>` there**, or it is not
+prerendered and a direct visit gets a 404. The build fails if a page throws while rendering or has no `<PageMeta>`.
+Page code must not touch `window`, `document` or `localStorage` while rendering; do that in an effect.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Deploying
 
-### `npm run build`
+Hosted on Netlify, which builds with `npm run build` and publishes `build/` (set in the Netlify dashboard, as before).
+Netlify serves `/approach` from `build/approach.html`, and any unknown URL gets `build/404.html` with a 404 status.
+`.nvmrc` pins Node 22, which Vite needs.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Going live (the site is pre-launch: hidden from search engines and AI crawlers)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+1. `index.html`: delete `<meta name="robots" content="noindex, nofollow" />`.
+2. `public/_headers`: delete the `X-Robots-Tag` block.
+3. `public/robots.txt`: remove the AI crawler `Disallow: /` group (or switch it to `Allow: /`),
+   and add `Sitemap: https://orangebanana.co/sitemap.xml` at the end.
+4. After the deploy, submit the sitemap in Google Search Console and Bing Webmaster Tools.

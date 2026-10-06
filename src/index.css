@@ -1,13 +1,99 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: "Inter", sans-serif;
+  background-color: #2b2c30;
+  color: #2b2c30;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+/* Ticker Marquee Animation */
+.marquee-track {
+  display: flex;
+  width: 200%;
+  animation: marquee 22s linear infinite;
+}
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* Axios Accent Box in Bottom Right of Cards */
+.axios-card {
+  position: relative;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+.axios-card::after {
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  right: -6px;
+  width: 16px;
+  height: 16px;
+  background-color: #2b2c30;
+  border-radius: 3px;
+}
+.axios-card-orange::after {
+  background-color: #f47036;
+}
+.axios-card:hover {
+  transform: translateY(-4px);
+}
+
+/* Hero Radial Ambient Glow */
+.hero-glow {
+  background-image: radial-gradient(circle at 50% 30%, rgba(35, 251, 248, 0.08) 0%, rgba(43, 44, 48, 0) 70%);
+}
+
+/* Smooth Mobile Menu Overlay Transition */
+#mobile-menu {
+  transition: all 0.3s ease-in-out;
+}
+
+/* Audit option rows */
+.audit-opt {
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease;
+  cursor: pointer;
+}
+.audit-opt:hover {
+  border-color: #bb734d;
+}
+.audit-opt.sel {
+  background-color: #2b2c30;
+  border-color: #f47036;
+}
+.audit-opt.sel .opt-text {
+  color: #ffffff;
+}
+.audit-opt .opt-val {
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease,
+    border-color 0.18s ease;
+}
+.audit-opt.sel .opt-val {
+  background-color: #f47036;
+  color: #ffffff;
+  border-color: #f47036;
+}
+.audit-answered .aq-badge {
+  background-color: #4fa5a4 !important;
+}
+
+/* The reCAPTCHA widget is a fixed 304px wide, so shrink it on very narrow phones */
+@media (max-width: 380px) {
+  .recaptcha-slot > div {
+    transform: scale(0.88);
+    transform-origin: center top;
+  }
 }

@@ -1,0 +1,4 @@
+# PRE-LAUNCH: keeps every response out of search results, including the PDF, llms.txt
+# and Netlify's *.netlify.app deploy URLs. Remove this block to go live (see README.md).
+/*
+  X-Robots-Tag: noindex, nofollow

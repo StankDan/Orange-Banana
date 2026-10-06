@@ -1,0 +1,2 @@
+# Every page is prerendered to its own HTML file at build time (scripts/prerender.mjs),
+# so there is no SPA catch-all here: unknown URLs get build/404.html with a 404 status.
